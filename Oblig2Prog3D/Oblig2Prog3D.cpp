@@ -10,18 +10,19 @@
 
 #include "Camera.h"
 #include "FileManager.h"
+#include "Plane.h"
 #include "Shader.h"
-
 
 #pragma region Public Variables
 
 Camera MainCamera;
 FileManager fileManager;
 Shader shader;
+Plane plane(10, 10, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 bool firstMouse = true; // Used in mouse_callback
 
-float lastX = 400, lastY = 300; //Used in mouse_callback. Set to the middle of the screen
+float lastX = 960, lastY = 540; //Used in mouse_callback. Set to the middle of the screen
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -41,8 +42,8 @@ void processInput(GLFWwindow *window);
 
 #pragma region Settings
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 std::string vertexShaderSourceString = fileManager.readFile("VertShader.vert");
 std::string fragmentShaderSourceString = fileManager.readFile("FragmentShader.frag");
@@ -210,7 +211,9 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         glBindVertexArray(VAO);
 
         glLineWidth(12);
-        glDrawArrays(GL_LINE_STRIP, 0, points.size());
+        //glDrawArrays(GL_LINE_STRIP, 0, points.size());
+
+        plane.draw(shader, shaderProgram);
         
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
