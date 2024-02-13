@@ -55,7 +55,7 @@ const char *fragmentShaderSource = fragmentShaderSourceString.c_str();
 
 int main()
 {
-    std::vector<Vertex> points = fileManager.readPointsFromFile("spiralpunkter2.txt");
+    std::vector<Vertex> points = fileManager.readPointsFromFile("datapunkter.txt");
     std::vector<float> floats = fileManager.convertPointsToFloats(points, 1/9.9f);
     
     GLFWwindow* window;
