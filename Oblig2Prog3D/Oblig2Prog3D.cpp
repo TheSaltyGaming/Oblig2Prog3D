@@ -18,7 +18,7 @@
 Camera MainCamera;
 FileManager fileManager;
 Shader shader;
-Plane plane(10, 10, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+Plane plane;
 
 bool firstMouse = true; // Used in mouse_callback
 
@@ -65,6 +65,7 @@ int main()
     
     setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
 
+    plane.CreateMeshPlane();
     
     render(window, shaderProgram, VAO, vertexColorLocation, points);
 
@@ -202,6 +203,8 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         
         // render kode her
         // ------
+
+        plane.DrawPlane();
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -212,8 +215,6 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
 
         glLineWidth(12);
         //glDrawArrays(GL_LINE_STRIP, 0, points.size());
-
-        plane.draw(shader, shaderProgram);
         
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
