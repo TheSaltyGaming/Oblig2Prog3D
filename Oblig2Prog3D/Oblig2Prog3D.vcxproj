@@ -160,16 +160,20 @@
         <ClCompile Include="Camera.cpp"/>
         <ClCompile Include="FileManager.cpp"/>
         <ClCompile Include="glad.c"/>
+        <ClCompile Include="Mesh.cpp" />
         <ClCompile Include="Oblig2Prog3D.cpp"/>
         <ClCompile Include="Plane.cpp" />
         <ClCompile Include="Shader.cpp"/>
+        <ClCompile Include="Texture.cpp" />
         <ClCompile Include="Vertex.cpp"/>
     </ItemGroup>
     <ItemGroup>
         <ClInclude Include="Camera.h"/>
         <ClInclude Include="FileManager.h"/>
+        <ClInclude Include="Mesh.h" />
         <ClInclude Include="Plane.h" />
         <ClInclude Include="Shader.h"/>
+        <ClInclude Include="Texture.h" />
         <ClInclude Include="Vertex.h"/>
     </ItemGroup>
     <ItemGroup>

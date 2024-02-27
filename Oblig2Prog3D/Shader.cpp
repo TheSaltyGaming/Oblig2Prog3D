@@ -52,3 +52,15 @@ unsigned int Shader::GetProgram()
 {
     return shaderProgram;
 }
+
+Shader::Shader(const char* vertexPath, const char* fragmentPath)
+{
+    
+}
+
+void Shader::setInt(const std::string& name, int value)
+{
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+
