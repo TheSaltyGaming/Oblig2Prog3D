@@ -10,7 +10,7 @@
 
 #include "Camera.h"
 #include "FileManager.h"
-#include "Plane.h"
+#include "Mesh/Plane.h"
 #include "Shader.h"
 
 #pragma region Public Variables

@@ -2,9 +2,9 @@
 #include <vector>
 #include <windows.h>
 
-#include "Shader.h"
+#include "../Shader.h"
 #include "Texture.h"
-#include "Vertex.h"
+#include "../Vertex.h"
 
 class Mesh
 {

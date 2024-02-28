@@ -1,6 +1,6 @@
 ﻿#include "Plane.h"
 
-#include "Vertex.h"
+#include "../Vertex.h"
 
 Plane::Plane()
 {
