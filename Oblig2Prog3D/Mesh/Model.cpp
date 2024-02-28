@@ -1,5 +1,5 @@
 ﻿#include "Model.h"
-#include <assimp/stb_image.h>
+// #include <assimp/stb_image.h>
 
 #include <iostream>
 using namespace std;
