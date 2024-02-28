@@ -53,7 +53,7 @@ unsigned int Shader::GetProgram()
     return shaderProgram;
 }
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
+Shader::Shader()
 {
     
 }
