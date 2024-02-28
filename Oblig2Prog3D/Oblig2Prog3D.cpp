@@ -176,7 +176,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         processInput(window);
 
         glm::mat4 model = glm::mat4(1.0f);
-
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         int modelLoc = glGetUniformLocation(shaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -204,7 +204,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         // render kode her
         // ------
 
-        plane.DrawPlane();
+       
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -212,10 +212,10 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         glUniform4f(vertexColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-
+ 
         glLineWidth(12);
         //glDrawArrays(GL_LINE_STRIP, 0, points.size());
-        
+        plane.DrawPlane();
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
