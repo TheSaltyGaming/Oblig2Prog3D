@@ -12,6 +12,7 @@
 #include "FileManager.h"
 #include "Mesh/Plane.h"
 #include "Shader.h"
+#include "Mesh/NPC.h"
 
 #pragma region Public Variables
 
@@ -19,6 +20,8 @@ Camera MainCamera;
 FileManager fileManager;
 Shader shader;
 Plane plane;
+Plane plane1;
+NPC npc;
 
 bool firstMouse = true; // Used in mouse_callback
 
@@ -56,7 +59,9 @@ const char *fragmentShaderSource = fragmentShaderSourceString.c_str();
 
 int main()
 {
-    std::vector<Vertex> points = fileManager.readPointsFromFile("datapunkter.txt");
+    
+    npc.GetPointsOnFile();
+    std::vector<Vertex> points = fileManager.readPointsFromFile("NPCPoints.txt");
     std::vector<float> floats = fileManager.convertPointsToFloats(points, 1/9.9f);
     
     GLFWwindow* window;
@@ -66,6 +71,8 @@ int main()
     setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
 
     plane.CreateMeshPlane();
+    plane1.CreateMeshPlane();
+    
     
     render(window, shaderProgram, VAO, vertexColorLocation, points);
 
@@ -75,6 +82,7 @@ int main()
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
+    std::cout<<npc.vector.x<<  npc.vector.y <<npc.vector.z << std::endl;
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -165,6 +173,11 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     glm::mat4 projection;
     // render loop
     // -----------
+    plane1.model = glm::translate(plane1.model, glm::vec3(0.0f, 10.0f, 0.0f));
+    plane.model = glm::translate(plane.model, glm::vec3(0.0f, -2.0f, 0.0f));
+
+   // plane1.model = glm::rotate( plane1.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -175,10 +188,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         // -----
         processInput(window);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        int modelLoc = glGetUniformLocation(shaderProgram, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        
 
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
         int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
@@ -214,8 +224,10 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         glBindVertexArray(VAO);
  
         glLineWidth(12);
-        //glDrawArrays(GL_LINE_STRIP, 0, points.size());
-        plane.DrawPlane();
+        glDrawArrays(GL_LINE_STRIP, 0, points.size());
+        plane1.DrawPlane(shaderProgram);
+        plane.DrawPlane(shaderProgram);
+       // npc.DrawLine(shaderProgram);
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

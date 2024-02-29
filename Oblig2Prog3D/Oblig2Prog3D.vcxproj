@@ -162,6 +162,7 @@
         <ClCompile Include="glad.c"/>
         <ClCompile Include="Mesh\Mesh.cpp" />
         <ClCompile Include="Mesh\Model.cpp" />
+        <ClCompile Include="Mesh\NPC.cpp" />
         <ClCompile Include="Mesh\Plane.cpp" />
         <ClCompile Include="Mesh\Texture.cpp" />
         <ClCompile Include="Oblig2Prog3D.cpp"/>
@@ -173,6 +174,7 @@
         <ClInclude Include="FileManager.h"/>
         <ClInclude Include="Mesh\Mesh.h" />
         <ClInclude Include="Mesh\Model.h" />
+        <ClInclude Include="Mesh\NPC.h" />
         <ClInclude Include="Mesh\Plane.h" />
         <ClInclude Include="Mesh\Texture.h" />
         <ClInclude Include="Shader.h"/>
