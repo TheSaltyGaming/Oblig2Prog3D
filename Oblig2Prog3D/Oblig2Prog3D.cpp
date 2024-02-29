@@ -60,18 +60,19 @@ const char *fragmentShaderSource = fragmentShaderSourceString.c_str();
 int main()
 {
     
-    npc.GetPointsOnFile();
+    
     std::vector<Vertex> points = fileManager.readPointsFromFile("NPCPoints.txt");
     std::vector<float> floats = fileManager.convertPointsToFloats(points, 1/9.9f);
     
     GLFWwindow* window;
     unsigned shaderProgram, VBO, VAO, EBO;
     int vertexColorLocation, value1;
+    npc.GetPointsOnFile();
     
-    setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
-
+setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
     plane.CreateMeshPlane();
     plane1.CreateMeshPlane();
+    npc.CreateNPC();
     
     
     render(window, shaderProgram, VAO, vertexColorLocation, points);
@@ -224,9 +225,13 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         glBindVertexArray(VAO);
  
         glLineWidth(12);
+
+
+        npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
         plane1.DrawPlane(shaderProgram);
         plane.DrawPlane(shaderProgram);
+        npc.DrawNPC(shaderProgram);
        // npc.DrawLine(shaderProgram);
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

@@ -18,10 +18,10 @@ void Plane::CreateMeshPlane()
     
     std::vector<float> planeVertices = {
         // positions          // texture coords
-        0.5f,  0.0f,  0.5f,  0.0f, 0.0f, 1.0f, // top right
-        0.5f,  0.0f, -0.5f,  0.0f, 0.0f, 1.0f, // bottom right
-       -0.5f,  0.0f, -0.5f,  0.0f, 0.0f, 1.0f, // bottom left
-       -0.5f,  0.0f,  0.5f,  0.0f, 0.0f, 1.0f
+        5.f,  0.0f, 5.f,  0.0f, 0.0f, 1.0f, // top right
+        5.f,  0.0f,-5.f,  0.0f, 0.0f, 1.0f, // bottom right
+       -5.f,  0.0f,-5.f,  0.0f, 0.0f, 1.0f, // bottom left
+       -5.f,  0.0f, 5.f,  0.0f, 0.0f, 1.0f, // top left
     };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
@@ -58,9 +58,7 @@ void Plane::CreateMeshPlane()
 
 void Plane::DrawPlane(unsigned int shaderProgram)
 {
-
     
-        
     int modelLoc = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     

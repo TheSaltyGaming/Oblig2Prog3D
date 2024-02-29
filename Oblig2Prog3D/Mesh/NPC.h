@@ -28,13 +28,18 @@ public:
 
     glm::vec4 Position =  vector*InverseMatrix;
 
+    glm::mat4 model = glm::mat4(1.0f);
+    
     float f(float x);
     void tick();
     void CreateLine();
+    void CreateNPC();
+    void MoveNPC();
     void DrawLine(unsigned int shaderProgram);
     void GetPointsOnFile();
+    void DrawNPC(unsigned int shaderProgram);
 
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, EBO;
     
     std::vector<Vertex> NPCPoints();
 };

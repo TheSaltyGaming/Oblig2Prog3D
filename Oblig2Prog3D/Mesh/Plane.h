@@ -13,9 +13,7 @@ class Plane
 {
 public:
     unsigned int VBO, VAO, EBO;
-    int width = 4;
-    int length = 6;
-    int height = 1;
+    
     std::vector<float> planeVertices;
     Plane();
 
