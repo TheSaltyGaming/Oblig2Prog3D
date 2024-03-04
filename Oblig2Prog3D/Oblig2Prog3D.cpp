@@ -31,8 +31,11 @@ Box door;
 NPC npc;
 NPC npcGraph;
 
+
+
 //TODO: USE THIS FOR COLLISION DETECTION. Ta player og kjør gjennom vektoren for å sjekke kollisjon. 
 std::vector<Box> boxes = {house, pickup, door};
+std::vector<Box> pickupList;
 
 bool firstMouse = true; // Used in mouse_callback
 
@@ -87,6 +90,13 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     npcGraph.CreateLine();
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
+
+    for (int i = 0; i < 7; ++i) {
+        Box pickup = Box(0.1f, Pickup);
+        pickup.model = glm::translate(pickup.model, glm::vec3(i-2 * 1.5f, -1.88f, 0.0f));
+        pickupList.push_back(pickup);
+    }
+    
     
     door = Box(-0.3, -0.7, -0.1, 0.3, 0.6, 0.1, Door);
     
@@ -297,6 +307,12 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         house.Draw(shaderProgram);
         pickup.Draw(shaderProgram);
         door.Draw(shaderProgram);
+
+        //draw all pickups
+        for (int i = 0; i < pickupList.size(); ++i)
+        {
+            pickupList[i].Draw(shaderProgram);
+        }
 
         //house check collision with pickup
         if (house.CheckCollision(&pickup))
