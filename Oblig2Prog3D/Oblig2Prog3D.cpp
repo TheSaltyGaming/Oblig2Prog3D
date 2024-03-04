@@ -187,6 +187,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     float NpcXPos = -5.0f;
     float NpcYPos = 0.0f;
     float NpcZPos = npc.f(NpcXPos);
+    bool isMovingForward = true;
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -240,8 +241,31 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         glLineWidth(12);
 
         npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
-        NpcXPos += 1 * deltaTime;
-        NpcZPos = npc.f(NpcXPos);
+
+       
+
+        if (NpcXPos > 5.0f)
+        {
+            isMovingForward = false;
+        }
+         if (NpcXPos < -5.0f)
+        {
+            isMovingForward = true;
+        }
+        
+        if (isMovingForward)
+        {
+            NpcXPos += 1 * deltaTime;
+            NpcZPos = npc.f(NpcXPos);
+        }
+        else
+        {
+            NpcXPos -= 1 * deltaTime;
+            NpcZPos = npc.f(NpcXPos);
+            std::cout << NpcXPos << std::endl;
+        }
+        
+        
        // npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
        
         plane1.DrawPlane(shaderProgram);
