@@ -28,6 +28,7 @@ Plane plane1;
 Box house;
 Box pickup;
 Box door;
+Box PlayerCollision;
 NPC npc;
 NPC npcGraph;
 
@@ -43,6 +44,7 @@ float lastX = 960, lastY = 540; //Used in mouse_callback. Set to the middle of t
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
+int pickupcount = 0;
 
 #pragma endregion
 
@@ -90,6 +92,8 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     npcGraph.CreateLine();
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
+    PlayerCollision = Box(0.4f, Player);
+    //PlayerCollision = Box(-0.1f, -0.1f, -0.1f, 0.1f, 0.2f, 0.1f, Player);
 
     for (int i = 0; i < 7; ++i) {
         Box pickup = Box(0.1f, Pickup);
@@ -269,6 +273,10 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
 
         npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
 
+        //collision following camera
+        PlayerCollision.model = glm::mat4(1.0f); // Reset the model matrix
+        PlayerCollision.model = glm::translate(PlayerCollision.model, MainCamera.cameraPos);
+
        
 
         if (NpcXPos > 5.0f)
@@ -314,16 +322,25 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
             pickupList[i].Draw(shaderProgram);
         }
 
-        //house check collision with pickup
-        if (house.CheckCollision(&pickup))
+        //pickup check
+        for (int i = 0; i < pickupList.size(); i++)
         {
-            std::cout << "Collision" << std::endl;
-            std::cout << "Collided with: " << pickup.type << std::endl;
-            
+            if (PlayerCollision.CheckCollision(&pickupList[i]))
+            {
+                std::cout << "Collision with pickup" << std::endl;
+                pickupcount++;
+                std::cout << "Pickup count: " << pickupcount << std::endl;
+
+                // Erase the pickup from the list
+                pickupList.erase(pickupList.begin() + i);
+                i--;
+            }
         }
-        else
+
+        if (PlayerCollision.CheckCollision(&door))
         {
-            std::cout << "No collision" << std::endl;
+            std::cout << "Collision with door" << std::endl;
+            MainCamera.cameraPos += glm::vec3(0.0f, 4.0f, 0.0f);
         }
         
        // npc.DrawLine(shaderProgram);
