@@ -160,6 +160,7 @@
         <ClCompile Include="Camera.cpp"/>
         <ClCompile Include="FileManager.cpp"/>
         <ClCompile Include="glad.c"/>
+        <ClCompile Include="Mesh\Box.cpp" />
         <ClCompile Include="Mesh\Mesh.cpp" />
         <ClCompile Include="Mesh\Model.cpp" />
         <ClCompile Include="Mesh\NPC.cpp" />
@@ -172,6 +173,7 @@
     <ItemGroup>
         <ClInclude Include="Camera.h"/>
         <ClInclude Include="FileManager.h"/>
+        <ClInclude Include="Mesh\Box.h" />
         <ClInclude Include="Mesh\Mesh.h" />
         <ClInclude Include="Mesh\Model.h" />
         <ClInclude Include="Mesh\NPC.h" />

@@ -13,6 +13,7 @@
 #include "Mesh/Plane.h"
 #include "Shader.h"
 #include "shadertest.h"
+#include "Mesh/Box.h"
 #include "Mesh/Model.h"
 #include "Mesh/NPC.h"
 
@@ -24,7 +25,9 @@ Shader shader;
 //shadertest ourShader("1.model_loading.vs", "1.model_loading.fs");
 Plane plane;
 Plane plane1;
+Box box;
 NPC npc;
+
 std::string path = "C:/Users/Ander/Documents/SPILLTEKNOLOGI OG SIMULERING/3D Programming/GIthubRepos/Oblig2Prog3D/Objects/backpack.obj";
 //Model ourModel(path);
 
@@ -78,6 +81,7 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     plane.CreateMeshPlane();
     plane1.CreateMeshPlane();
     npc.CreateNPC();
+    box = Box(3);
     
     
     
@@ -221,7 +225,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         // render kode her
         // ------
 
-
+        
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
@@ -237,12 +241,16 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
  
         glLineWidth(12);
 
-
+        
         npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
         plane1.DrawPlane(shaderProgram);
         plane.DrawPlane(shaderProgram);
+        //box.Draw(shaderProgram);
         npc.DrawNPC(shaderProgram);
+
+        box.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
+        box.Draw(shaderProgram);
        // npc.DrawLine(shaderProgram);
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
