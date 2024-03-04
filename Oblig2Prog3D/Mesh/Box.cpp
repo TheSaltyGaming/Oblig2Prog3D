@@ -9,18 +9,20 @@ Box::Box()
 }
 
 
-Box::Box(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+Box::Box(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, box_type boxtype)
 {
+    type = boxtype;
+    SetColor();
     boxVertices = {
         // positions
-        minX,  maxY,  minZ,
-        minX,  minY,  minZ,
-        maxX,  minY,  minZ,
-        maxX,  maxY,  minZ,
-        minX,  maxY,  maxZ,
-        minX,  minY,  maxZ,
-        maxX,  minY,  maxZ,
-        maxX,  maxY,  maxZ
+        minX,  maxY,  minZ, red, green, blue,
+        minX,  minY,  minZ, red, green, blue,
+        maxX,  minY,  minZ, red, green, blue,
+        maxX,  maxY,  minZ, red, green, blue,
+        minX,  maxY,  maxZ, red, green, blue,
+        minX,  minY,  maxZ, red, green, blue,
+        maxX,  minY,  maxZ, red, green, blue,
+        maxX,  maxY,  maxZ, red, green, blue
     };
     Setup();
 }

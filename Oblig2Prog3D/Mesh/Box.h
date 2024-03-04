@@ -11,7 +11,7 @@ class Box
 {
 public:
     Box();
-    Box(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+    Box(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, box_type boxtype);
     Box(float radius, box_type boxtype);
 
     void SetColor();

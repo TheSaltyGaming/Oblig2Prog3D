@@ -27,8 +27,12 @@ Plane plane;
 Plane plane1;
 Box house;
 Box pickup;
+Box door;
 NPC npc;
 NPC npcGraph;
+
+//TODO: USE THIS FOR COLLISION DETECTION. Ta player og kjør gjennom vektoren for å sjekke kollisjon. 
+std::vector<Box> boxes = {house, pickup, door};
 
 bool firstMouse = true; // Used in mouse_callback
 
@@ -83,6 +87,8 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     npcGraph.CreateLine();
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
+    
+    door = Box(-0.3, -0.7, -0.1, 0.3, 0.6, 0.1, Door);
     
     
     
@@ -189,7 +195,8 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     plane.model = glm::translate(plane.model, glm::vec3(0.0f, -2.0f, 0.0f));
 
     house.model = glm::translate(house.model, glm::vec3(4.0f, -0.999f, -4.0f));
-    house.model = glm::scale(house.model, glm::vec3(0.5f, 0.5f, 0.5f));
+    door.model = glm::translate(house.model, glm::vec3(-0.2f, -0.299f, 1.0f));
+    //house.model = glm::scale(house.model, glm::vec3(0.5f, 0.5f, 0.5f));
 
     pickup.model = glm::translate(house.model, glm::vec3(1.0f, -0.599f, -1.0f));
 
@@ -289,11 +296,14 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         //box.Draw(shaderProgram, 0, -1.f, 0);
         house.Draw(shaderProgram);
         pickup.Draw(shaderProgram);
+        door.Draw(shaderProgram);
 
         //house check collision with pickup
         if (house.CheckCollision(&pickup))
         {
             std::cout << "Collision" << std::endl;
+            std::cout << "Collided with: " << pickup.type << std::endl;
+            
         }
         else
         {
