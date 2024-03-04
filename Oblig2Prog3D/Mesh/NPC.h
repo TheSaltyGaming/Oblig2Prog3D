@@ -33,12 +33,15 @@ public:
     float f(float x);
     void tick();
     void CreateLine();
-    void CreateNPC();
-    void MoveNPC();
     void DrawLine(unsigned int shaderProgram);
-    void GetPointsOnFile();
+    void CreateNPC();
+    glm::mat4 CalculateModelMatrix();
+    void MoveNPC( glm::vec3 pos);
     void DrawNPC(unsigned int shaderProgram);
 
+    glm::vec3 CurrentNPCPosition; 
+    glm::vec3 PreviousNPCPosition;
+    
     unsigned int VBO, VAO, EBO;
     
     std::vector<Vertex> NPCPoints();

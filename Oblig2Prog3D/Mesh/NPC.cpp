@@ -15,6 +15,9 @@ std::vector<Vertex> NPC::NPCPoints()
         v.x = i;
         v.y = 0;
         v.z = f(i);
+        v.r = 1.0f;
+        v.g = 0.0f;
+        v.b = 1.0f;
         NPCPoints.push_back(v);
     }
     
@@ -32,6 +35,7 @@ void NPC::tick()
 void NPC::CreateLine()
 {
     std::vector<Vertex> NPCPoints = this->NPCPoints();
+    
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
@@ -48,9 +52,6 @@ void NPC::CreateLine()
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 1);
-    glBindVertexArray(1); 
-    
 }
 
 void NPC::CreateNPC()
@@ -99,33 +100,32 @@ void NPC::CreateNPC()
     glEnableVertexAttribArray(1);
 }
 
-void NPC::MoveNPC()
-{
-}
 
+
+void NPC::MoveNPC(glm::vec3 pos)
+{
+    CurrentNPCPosition = pos;
+    
+}
+glm::mat4 NPC::CalculateModelMatrix()
+{
+    return glm::translate(glm::mat4(1.f),CurrentNPCPosition);
+}
 void NPC::DrawLine(unsigned int shaderProgram)
 {
+    int modelLoc = glGetUniformLocation(shaderProgram, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(CalculateModelMatrix()));
     glBindVertexArray(VAO);
     
-    glDrawArrays(GL_LINES, 0, 2);
+    glDrawArrays(GL_LINES, 0, 100);
 }
 
-void NPC::GetPointsOnFile()
-{
-    std::vector<Vertex> NPCPoints = this->NPCPoints();
-    std::ofstream file;
-    file.open("NPCPoints.txt");
-    for (int i = 0; i < NPCPoints.size(); i++)
-    {
-        file << "X: " << NPCPoints[i].x << ", " << "Y: " << NPCPoints[i].y << ", " << "Z: " << NPCPoints[i].z << ", "  << "r: "<<"1.0, "<< "g:"<<"1.0, "<< "b: "<<"0.0, " << std::endl;
-    }
-    file.close();
-}
+
 
 void NPC::DrawNPC(unsigned shaderProgram)
 {
     int modelLoc = glGetUniformLocation(shaderProgram, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(CalculateModelMatrix()));
     
     glBindVertexArray(VAO);
     //glDrawArrays(GL_TRIANGLES, 0, (width - 1) * (length - 1) * 6);

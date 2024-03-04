@@ -27,9 +27,7 @@ Plane plane;
 Plane plane1;
 Box box;
 NPC npc;
-
-std::string path = "C:/Users/Ander/Documents/SPILLTEKNOLOGI OG SIMULERING/3D Programming/GIthubRepos/Oblig2Prog3D/Objects/backpack.obj";
-//Model ourModel(path);
+NPC npcGraph;
 
 bool firstMouse = true; // Used in mouse_callback
 
@@ -75,12 +73,13 @@ int main()
     GLFWwindow* window;
     unsigned shaderProgram, VBO, VAO, EBO;
     int vertexColorLocation, value1;
-    npc.GetPointsOnFile();
+    
     
 setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
     plane.CreateMeshPlane();
     plane1.CreateMeshPlane();
     npc.CreateNPC();
+    npcGraph.CreateLine();
     box = Box(3);
     
     
@@ -145,29 +144,29 @@ void setup(GLFWwindow*& window, unsigned& shaderProgram, unsigned& VBO, unsigned
     shaderProgram = shader.GetProgram();
 
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
-
-    vertexColorLocation = glGetUniformLocation(shaderProgram,"Color");
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, floats.size()*sizeof(float), floats.data() , GL_STATIC_DRAW);
-    
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0);
+    // glGenVertexArrays(1, &VAO);
+    // glGenBuffers(1, &VBO);
+    // glGenBuffers(1, &EBO);
+    // // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    // glBindVertexArray(VAO);
+    //
+    // vertexColorLocation = glGetUniformLocation(shaderProgram,"Color");
+    //
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // glBufferData(GL_ARRAY_BUFFER, floats.size()*sizeof(float), floats.data() , GL_STATIC_DRAW);
+    //
+    //
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    // glEnableVertexAttribArray(0);
+    //
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+    // glEnableVertexAttribArray(1);
+    //
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //
+    // // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    // glBindVertexArray(0);
     
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -188,7 +187,10 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     plane.model = glm::translate(plane.model, glm::vec3(0.0f, -2.0f, 0.0f));
 
    // plane1.model = glm::rotate( plane1.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    
+    float NpcXPos = -5.0f;
+    float NpcYPos = 0.0f;
+    float NpcZPos = npc.f(NpcXPos);
+    bool isMovingForward = true;
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -241,6 +243,34 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
  
         glLineWidth(12);
 
+        npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
+
+       
+
+        if (NpcXPos > 5.0f)
+        {
+            isMovingForward = false;
+        }
+         if (NpcXPos < -5.0f)
+        {
+            isMovingForward = true;
+        }
+        
+        if (isMovingForward)
+        {
+            NpcXPos += 1 * deltaTime;
+            NpcZPos = npc.f(NpcXPos);
+        }
+        else
+        {
+            NpcXPos -= 1 * deltaTime;
+            NpcZPos = npc.f(NpcXPos);
+            std::cout << NpcXPos << std::endl;
+        }
+        
+        
+       // npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
+       
         
         npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
@@ -248,6 +278,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         plane.DrawPlane(shaderProgram);
         //box.Draw(shaderProgram);
         npc.DrawNPC(shaderProgram);
+        npcGraph.DrawLine(shaderProgram);
 
         box.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
         box.Draw(shaderProgram);
