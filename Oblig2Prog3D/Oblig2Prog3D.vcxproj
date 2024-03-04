@@ -115,7 +115,7 @@
             <SubSystem>Console</SubSystem>
             <GenerateDebugInformation>true</GenerateDebugInformation>
             <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc143-mt.dll;%(AdditionalDependencies)</AdditionalDependencies>
+            <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -178,6 +178,7 @@
         <ClInclude Include="Mesh\Plane.h" />
         <ClInclude Include="Mesh\Texture.h" />
         <ClInclude Include="Shader.h"/>
+        <ClInclude Include="shadertest.h" />
         <ClInclude Include="Vertex.h"/>
     </ItemGroup>
     <ItemGroup>

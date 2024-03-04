@@ -12,6 +12,8 @@
 #include "FileManager.h"
 #include "Mesh/Plane.h"
 #include "Shader.h"
+#include "shadertest.h"
+#include "Mesh/Model.h"
 #include "Mesh/NPC.h"
 
 #pragma region Public Variables
@@ -19,9 +21,12 @@
 Camera MainCamera;
 FileManager fileManager;
 Shader shader;
+//shadertest ourShader("1.model_loading.vs", "1.model_loading.fs");
 Plane plane;
 Plane plane1;
 NPC npc;
+std::string path = "C:/Users/Ander/Documents/SPILLTEKNOLOGI OG SIMULERING/3D Programming/GIthubRepos/Oblig2Prog3D/Objects/backpack.obj";
+//Model ourModel(path);
 
 bool firstMouse = true; // Used in mouse_callback
 
@@ -73,6 +78,7 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     plane.CreateMeshPlane();
     plane1.CreateMeshPlane();
     npc.CreateNPC();
+    
     
     
     render(window, shaderProgram, VAO, vertexColorLocation, points);
@@ -215,7 +221,12 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         // render kode her
         // ------
 
-       
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        //shader.setMat4("model", model);
+        //ourModel.Draw();
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
