@@ -1,4 +1,5 @@
 ﻿// #include "Model.h"
+// #define STB_IMAGE_IMPLEMENTATION
 // #include <stb/stb_image.h>
 //
 // #include <iostream>
@@ -16,7 +17,11 @@
 //     int width, height, nrComponents;
 //     //unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);TestMaterial.png
 //     unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
-//
+//     
+//     if (data == nullptr) {
+//         std::cerr << "Failed to load image: " << filename << std::endl;
+//         return 0;
+//     }
 //     if (data)
 //     {
 //         GLenum format;
@@ -80,29 +85,29 @@
 //
 // Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 // {
-// // data to fill
-//         vector<Vertex> vertices;
-//         vector<unsigned int> indices;
-//         vector<Texture> textures;
+//     // data to fill
+//     vector<Vertex> vertices;
+//     vector<unsigned int> indices;
+//     vector<Texture> textures;
 //
-//         // walk through each of the mesh's vertices
-//         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
+//     // walk through each of the mesh's vertices
+//     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
+//     {
+//         Vertex vertex;
+//         glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
+//         // positions
+//         vector.x = mesh->mVertices[i].x;
+//         vector.y = mesh->mVertices[i].y;
+//         vector.z = mesh->mVertices[i].z;
+//         vertex.Position = vector;
+//         // normals
+//         if (mesh->HasNormals())
 //         {
-//             Vertex vertex;
-//             glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
-//             // positions
-//             vector.x = mesh->mVertices[i].x;
-//             vector.y = mesh->mVertices[i].y;
-//             vector.z = mesh->mVertices[i].z;
-//             vertex.Position = vector;
-//             // normals
-//             if (mesh->HasNormals())
-//             {
-//                 vector.x = mesh->mNormals[i].x;
-//                 vector.y = mesh->mNormals[i].y;
-//                 vector.z = mesh->mNormals[i].z;
-//                 vertex.Normal = vector;
-//             }
+//             vector.x = mesh->mNormals[i].x;
+//             vector.y = mesh->mNormals[i].y;
+//             vector.z = mesh->mNormals[i].z;
+//             vertex.Normal = vector;
+//         }
 //             // texture coordinates
 //             if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
 //             {
@@ -116,7 +121,7 @@
 //
 //             vertices.push_back(vertex);
 //         }
-//         // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
+//         // now walk through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
 //         for(unsigned int i = 0; i < mesh->mNumFaces; i++)
 //         {
 //             aiFace face = mesh->mFaces[i];
@@ -160,7 +165,7 @@
 //         Texture texture;
 //         texture.id = TextureFromFile(str.C_Str(), directory);
 //         texture.type = typeName;
-//         texture.path = str.C_Str();
+//         //texture.path = str.C_Str();
 //         textures.push_back(texture);
 //     }
 //     return textures;

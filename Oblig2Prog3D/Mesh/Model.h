@@ -10,11 +10,11 @@
 // class Model
 // {
 // public:
-//     Model(char *path)
+//     Model(std::string path)
 //     {
 //         loadModel(path);
 //     }
-//     void Draw(Shader &shader);	
+//     void Draw(shadertest &shader);	
 // private:
 //     // model data
 //     std::vector<Mesh> meshes;
