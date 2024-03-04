@@ -25,7 +25,8 @@ Shader shader;
 //shadertest ourShader("1.model_loading.vs", "1.model_loading.fs");
 Plane plane;
 Plane plane1;
-Box box;
+Box house;
+Box pickup;
 NPC npc;
 NPC npcGraph;
 
@@ -80,7 +81,8 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     plane1.CreateMeshPlane();
     npc.CreateNPC();
     npcGraph.CreateLine();
-    box = Box(3);
+    house = Box(1, House);
+    pickup = Box(0.5f, Pickup);
     
     
     
@@ -186,6 +188,11 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     plane1.model = glm::translate(plane1.model, glm::vec3(0.0f, 10.0f, 0.0f));
     plane.model = glm::translate(plane.model, glm::vec3(0.0f, -2.0f, 0.0f));
 
+    house.model = glm::translate(house.model, glm::vec3(4.0f, -0.999f, -4.0f));
+    house.model = glm::scale(house.model, glm::vec3(0.5f, 0.5f, 0.5f));
+
+    pickup.model = glm::translate(house.model, glm::vec3(1.0f, -0.599f, -1.0f));
+
    // plane1.model = glm::rotate( plane1.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     float NpcXPos = -5.0f;
     float NpcYPos = 0.0f;
@@ -276,12 +283,23 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
         plane1.DrawPlane(shaderProgram);
         plane.DrawPlane(shaderProgram);
-        //box.Draw(shaderProgram);
         npc.DrawNPC(shaderProgram);
         npcGraph.DrawLine(shaderProgram);
+        
+        //box.Draw(shaderProgram, 0, -1.f, 0);
+        house.Draw(shaderProgram);
+        pickup.Draw(shaderProgram);
 
-        box.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
-        box.Draw(shaderProgram);
+        //house check collision with pickup
+        if (house.CheckCollision(&pickup))
+        {
+            std::cout << "Collision" << std::endl;
+        }
+        else
+        {
+            std::cout << "No collision" << std::endl;
+        }
+        
        // npc.DrawLine(shaderProgram);
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

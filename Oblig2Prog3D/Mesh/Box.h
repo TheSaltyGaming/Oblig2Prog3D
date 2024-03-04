@@ -5,13 +5,22 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+enum box_type {Door, House, Pickup, Player, Npc};
+
 class Box
 {
 public:
     Box();
     Box(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
-    Box(float radius);
+    Box(float radius, box_type boxtype);
+
+    void SetColor();
     float minX, minY, minZ, maxX, maxY, maxZ;
+
+    float red = 0.08f;
+    float green = 0.39f;
+    float blue = 0.25f;
+    //TODO: different colors based on enum type
     std::vector<float> boxVertices;
 
     unsigned int indices[36] = {
@@ -37,7 +46,14 @@ public:
     
     
     void Draw(unsigned int shaderProgram);
-    void Draw(float x, float y, float z);
-    void Draw(float x, float y, float z, float scale);
+    void Draw(unsigned int shaderProgram, float x, float y, float z);
+
+    glm::vec3 GetMin();
+    glm::vec3 GetMax();
+
+    bool CheckCollision(Box* otherbox);
+
+    box_type type;
+    
     
 };
