@@ -8,14 +8,6 @@ Plane::Plane()
 
 void Plane::CreateMeshPlane()
 {
-   //  float vertices[] = {
-   //      // positions          // texture coords
-   //      5.f,  5.f, 0.0f,   1.0f, 1.0f, // top right
-   //      5.f, -5.f, 0.0f,   1.0f, 1.0f, // bottom right
-   //     -5.f, -5.f, 0.0f,   1.0f, 1.0f, // bottom left
-   //     -5.f,  5.f, 0.0f,   1.0f, 1.0f  // top left 
-   // };
-    
     std::vector<float> planeVertices = {
         // positions          // texture coords
         5.f,  0.0f, 5.f,  0.0f, 0.0f, 1.0f, // top right
@@ -34,9 +26,6 @@ void Plane::CreateMeshPlane()
 
     glBindVertexArray(VAO);
 
-    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
-   // glBufferData(GL_ARRAY_BUFFER, planeVertices.size() * sizeof(float), planeVertices.data(), GL_STATIC_DRAW);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, planeVertices.size() * sizeof(float), planeVertices.data(), GL_STATIC_DRAW);
     
@@ -49,11 +38,6 @@ void Plane::CreateMeshPlane()
     // texture coord attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-
-    // Unbind VAO and VBO
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
-   // glBindVertexArray(0);
 }
 
 void Plane::DrawPlane(unsigned int shaderProgram)

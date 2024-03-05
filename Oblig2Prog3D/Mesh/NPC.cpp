@@ -20,16 +20,7 @@ std::vector<Vertex> NPC::NPCPoints()
         v.b = 1.0f;
         NPCPoints.push_back(v);
     }
-    
     return NPCPoints;
-    
-}
-
-void NPC::tick()
-{
-    // std::cout << "Positions: " << Position.x << " " << Position.y << " "
-    // << Position.z << " "<< Position.w <<std::endl;
-    
 }
 
 void NPC::CreateLine()
@@ -48,8 +39,7 @@ void NPC::CreateLine()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex) ,(void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -95,12 +85,9 @@ void NPC::CreateNPC()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // texture coord attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 }
-
-
 
 void NPC::MoveNPC(glm::vec3 pos)
 {
@@ -116,7 +103,6 @@ void NPC::DrawLine(unsigned int shaderProgram)
     int modelLoc = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr( model));
     glBindVertexArray(VAO);
-    
     glDrawArrays(GL_LINES, 0, 100);
 }
 
@@ -124,9 +110,7 @@ void NPC::DrawNPC(unsigned shaderProgram)
 {
     int modelLoc = glGetUniformLocation(shaderProgram, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(CalculateModelMatrix()));
-    
     glBindVertexArray(VAO);
-    //glDrawArrays(GL_TRIANGLES, 0, (width - 1) * (length - 1) * 6);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
