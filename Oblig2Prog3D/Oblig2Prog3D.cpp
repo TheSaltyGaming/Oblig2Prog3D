@@ -20,29 +20,28 @@
 Camera MainCamera;
 FileManager fileManager;
 Shader shader;
-//shadertest ourShader("1.model_loading.vs", "1.model_loading.fs");
 Plane plane;
-Plane plane1;
+
 Box house;
-Box pickup;
 Box door;
 Box PlayerCollision;
+Box playerinhouse;
+
 NPC npc;
 NPC npcGraph;
-
-Box playerinhouse;
 
 //SCENE TWO
 Box Wall1;
 Box Wall2;
 Box Wall3;
 Box Wall4;
+Plane plane1;
 
 Box tableLeg;
 Box tableTop;
 
 
-std::vector<Box> walls;;
+std::vector<Box> walls;
 std::vector<Box> pickupList;
 
 bool firstMouse = true; // Used in mouse_callback
@@ -88,7 +87,6 @@ void CreateObjects()
     npc.CreateNPC();
     npcGraph.CreateLine();
     house = Box(1, House);
-    pickup = Box(0.5f, Pickup);
     
     PlayerCollision = Box(0.7f, Player);
 
@@ -214,8 +212,7 @@ void SetModelLocations()
     door.model = glm::translate(house.model, glm::vec3(-0.2f, -0.299f, 1.0f));
     //house.model = glm::scale(house.model, glm::vec3(0.5f, 0.5f, 0.5f));
     npcGraph.model = glm::translate(npcGraph.model, glm::vec3(0.0f, -1, 0.0f));
-
-    pickup.model = glm::translate(house.model, glm::vec3(1.0f, 0.599f, -1.0f));
+    
 
     Wall1.model = glm::translate(Wall1.model, glm::vec3(0.0f, -7.29f, 4.0f));
     Wall2.model = glm::translate(Wall2.model, glm::vec3(0.0f, -7.29f, -4.0f));
@@ -268,7 +265,6 @@ void DrawObjects(unsigned shaderProgram, std::vector<Vertex> points)
         
     //box.Draw(shaderProgram, 0, -1.f, 0);
     house.Draw(shaderProgram);
-    pickup.Draw(shaderProgram);
     door.Draw(shaderProgram);
 
     tableLeg.Draw(shaderProgram);
@@ -359,6 +355,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         // -----
         processInput(window);
 
+        //Field of view changes if inside house
         projection = glm::perspective(glm::radians(isInsideHouse ? 80.0f : 45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
         
         CameraView(shaderProgram, trans, projection);
