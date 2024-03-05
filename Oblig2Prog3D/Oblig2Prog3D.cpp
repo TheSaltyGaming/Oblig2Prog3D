@@ -30,6 +30,8 @@ Box PlayerCollision;
 NPC npc;
 NPC npcGraph;
 
+Box playerinhouse;
+
 //SCENE TWO
 Box Wall1;
 Box Wall2;
@@ -40,11 +42,11 @@ Box tableLeg;
 Box tableTop;
 
 
-//TODO: USE THIS FOR COLLISION DETECTION. Ta player og kjør gjennom vektoren for å sjekke kollisjon. 
 std::vector<Box> walls;;
 std::vector<Box> pickupList;
 
 bool firstMouse = true; // Used in mouse_callback
+bool isInsideHouse = false;
 
 float lastX = 960, lastY = 540; //Used in mouse_callback. Set to the middle of the screen
 
@@ -99,6 +101,8 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
     PlayerCollision = Box(1.f, Player);
+
+    playerinhouse = Box(0.2f, Player);
 
     //Adding walls to vector
     walls.push_back(Wall1);
@@ -226,6 +230,8 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     tableLeg.model = glm::translate(tableLeg.model, glm::vec3(0.0f, -7.84f, 0.0f));
     tableTop.model = glm::translate(tableTop.model, glm::vec3(0.0f, -7.73f, 0.0f));
 
+    playerinhouse.model = glm::translate(playerinhouse.model, glm::vec3(1.0f, -7.78f, -1.0f));
+
    // plane1.model = glm::rotate( plane1.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     float NpcXPos = -5.0f;
     float NpcYPos = -0.9f;
@@ -243,7 +249,10 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
 
         
 
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        //projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+        projection = glm::perspective(glm::radians(isInsideHouse ? 80.0f : 45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        
         int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         
@@ -329,6 +338,8 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         tableLeg.Draw(shaderProgram);
         tableTop.Draw(shaderProgram);
 
+        playerinhouse.Draw(shaderProgram);
+
         //draw all pickups
         for (int i = 0; i < pickupList.size(); ++i)
         {
@@ -360,9 +371,10 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         {
             std::cout << "Collision with door" << std::endl;
             MainCamera.cameraPos = glm::vec3(3.88911f, -5.91243f, 3.82015f);
+            isInsideHouse = true;
         }
 
-        std::cout << "Player position: " << MainCamera.cameraPos.x << " " << MainCamera.cameraPos.y << " " << MainCamera.cameraPos.z << std::endl;
+        //std::cout << "Player position: " << MainCamera.cameraPos.x << " " << MainCamera.cameraPos.y << " " << MainCamera.cameraPos.z << std::endl;
        // npc.DrawLine(shaderProgram);
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -381,20 +393,35 @@ void processInput(GLFWwindow *window)
     
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-
+    
     float cameraSpeed = 2.5f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        MainCamera.cameraPos += cameraSpeed * cameraFrontXZ;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        MainCamera.cameraPos -= cameraSpeed * cameraFrontXZ;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        MainCamera.cameraPos -= glm::normalize(glm::cross(MainCamera.cameraFront, MainCamera.cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        MainCamera.cameraPos += glm::normalize(glm::cross(MainCamera.cameraFront, MainCamera.cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        MainCamera.cameraPos += cameraSpeed * MainCamera.cameraUp; // Move camera up
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        MainCamera.cameraPos -= cameraSpeed * MainCamera.cameraUp; // Move camera down
+
+    if (isInsideHouse)
+    {
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+                playerinhouse.model =  glm::translate(playerinhouse.model,glm::vec3(-1, 0, 0)*cameraSpeed);
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            playerinhouse.model =  glm::translate(playerinhouse.model,glm::vec3(1, 0, 0)*cameraSpeed);
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            playerinhouse.model =  glm::translate(playerinhouse.model,glm::vec3(0, 0, 1)*cameraSpeed);
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            playerinhouse.model =  glm::translate(playerinhouse.model,glm::vec3(0, 0, -1)*cameraSpeed);
+    }
+    else
+    {
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            MainCamera.cameraPos += cameraSpeed * cameraFrontXZ;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            MainCamera.cameraPos -= cameraSpeed * cameraFrontXZ;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            MainCamera.cameraPos -= glm::normalize(glm::cross(MainCamera.cameraFront, MainCamera.cameraUp)) * cameraSpeed;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            MainCamera.cameraPos += glm::normalize(glm::cross(MainCamera.cameraFront, MainCamera.cameraUp)) * cameraSpeed;
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+            MainCamera.cameraPos += cameraSpeed * MainCamera.cameraUp; // Move camera up
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+            MainCamera.cameraPos -= cameraSpeed * MainCamera.cameraUp; // Move camera down
+    }
 
 }
 
@@ -410,6 +437,22 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 //Alt av mouse input skjer her.
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
  {
+     if (isInsideHouse)
+     {
+         //print pitch and yaw
+            std::cout << "Pitch: " << MainCamera.pitch << " Yaw: " << MainCamera.yaw << std::endl;
+         MainCamera.yaw   = -136.2;
+         MainCamera.pitch = -26.6;
+
+         glm::vec3 direction;
+         direction.x = cos(glm::radians(MainCamera.yaw)) * cos(glm::radians(MainCamera.pitch));
+         direction.y = sin(glm::radians(MainCamera.pitch));
+         direction.z = sin(glm::radians(MainCamera.yaw)) * cos(glm::radians(MainCamera.pitch));
+         MainCamera.cameraFront = glm::normalize(direction);
+         return;
+     }
+
+    
      if (firstMouse)
      {
          lastX = xpos;
