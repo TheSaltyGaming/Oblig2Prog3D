@@ -89,7 +89,9 @@ void CreateObjects()
     npcGraph.CreateLine();
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
-    PlayerCollision = Box(1.f, Player);
+    
+    PlayerCollision = Box(0.7f, Player);
+
     playerinhouse = Box(0.2f, Player);
 
     //Adding walls to vector
@@ -106,6 +108,10 @@ void CreateObjects()
     tableLeg = Box(0.15f, Pickup);
     tableTop = Box(-0.3f, -0.05f, -0.3f, 0.3f, 0.05f, 0.3f, Npc);
     
+    
+    //Wall1 = Box(-1.5, -0.7, -0.05, 1.5, 1, 0.05, House);
+    
+    //PlayerCollision = Box(-0.1f, -0.1f, -0.1f, 0.1f, 0.2f, 0.1f, Player);
 
     for (int i = 0; i < 7; ++i) {
         Box pickup = Box(0.1f, Pickup);
@@ -130,7 +136,7 @@ int main()
     
     
     setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
-
+    
     CreateObjects();
     
     
@@ -308,8 +314,6 @@ void CollisionCheck()
 
 void CameraView(unsigned shaderProgram, glm::mat4 trans, glm::mat4 projection)
 {
-    projection = glm::perspective(glm::radians(isInsideHouse ? 80.0f : 45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-        
     int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         
@@ -333,10 +337,8 @@ void CameraView(unsigned shaderProgram, glm::mat4 trans, glm::mat4 projection)
 void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertexColorLocation, std::vector<Vertex> points)
 {
     glm::mat4 trans = glm::mat4(1.0f);
-
     glm::mat4 projection;
-    // render loop
-    // -----------
+    
     SetModelLocations();
 
     //NPC INTERPOLATION THINGS
@@ -344,18 +346,21 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     float NpcYPos = -0.9f;
     float NpcZPos = npc.f(NpcXPos);
     bool isMovingForward = true;
-    
+
+    // render loop
+    // -----------
     while (!glfwWindowShouldClose(window))
     {
-        //DeltaTime
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        lastFrame = currentFrame;  
         
         // input
         // -----
         processInput(window);
 
+        projection = glm::perspective(glm::radians(isInsideHouse ? 80.0f : 45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        
         CameraView(shaderProgram, trans, projection);
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -372,7 +377,9 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         PlayerCollision.model = glm::translate(PlayerCollision.model, MainCamera.cameraPos);
 
         MoveNPC(NpcXPos, NpcYPos, NpcZPos, isMovingForward);
+        
         DrawObjects(shaderProgram, points);
+        
         CollisionCheck();
         
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -438,7 +445,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
      if (isInsideHouse)
      {
          //print pitch and yaw
-            std::cout << "Pitch: " << MainCamera.pitch << " Yaw: " << MainCamera.yaw << std::endl;
+            //std::cout << "Pitch: " << MainCamera.pitch << " Yaw: " << MainCamera.yaw << std::endl;
          MainCamera.yaw   = -136.2;
          MainCamera.pitch = -26.6;
 
