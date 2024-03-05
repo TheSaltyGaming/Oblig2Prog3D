@@ -204,11 +204,12 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     // render loop
     // -----------
     plane1.model = glm::translate(plane1.model, glm::vec3(0.0f, -8.0f, 0.0f));
-    plane.model = glm::translate(plane.model, glm::vec3(0.0f, -2.0f, 0.0f));
+    plane.model = glm::translate(plane.model, glm::vec3(0.0f, -1.2f, 0.0f));
 
-    house.model = glm::translate(house.model, glm::vec3(4.0f, 0.1, -4.0f));
+    house.model = glm::translate(house.model, glm::vec3(4.0f, -0.2, -4.0f));
     door.model = glm::translate(house.model, glm::vec3(-0.2f, -0.299f, 1.0f));
     //house.model = glm::scale(house.model, glm::vec3(0.5f, 0.5f, 0.5f));
+    npcGraph.model = glm::translate(npcGraph.model, glm::vec3(0.0f, -1, 0.0f));
 
     pickup.model = glm::translate(house.model, glm::vec3(1.0f, 0.599f, -1.0f));
 
