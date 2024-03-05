@@ -92,7 +92,7 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     npcGraph.CreateLine();
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
-    PlayerCollision = Box(0.8f, Player);
+    PlayerCollision = Box(1.f, Player);
     //PlayerCollision = Box(-0.1f, -0.1f, -0.1f, 0.1f, 0.2f, 0.1f, Player);
 
     for (int i = 0; i < 7; ++i) {
@@ -341,7 +341,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         if (PlayerCollision.CheckCollision(&door))
         {
             std::cout << "Collision with door" << std::endl;
-            MainCamera.cameraPos += glm::vec3(0.0f, -4.0f, 0.0f);
+            MainCamera.cameraPos += glm::vec3(3.889f, -5.91f, 0.0f);
         }
         
        // npc.DrawLine(shaderProgram);
