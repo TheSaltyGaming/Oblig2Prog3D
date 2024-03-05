@@ -233,7 +233,7 @@ void SetModelLocations()
     playerinhouse.model = glm::translate(playerinhouse.model, glm::vec3(1.0f, -7.78f, -1.0f));
 }
 
-void MoveNPC(float& NpcXPos, float NpcYPos, float NpcZPos, bool isMovingForward)
+void MoveNPC(float& NpcXPos, float NpcYPos, float& NpcZPos, bool& isMovingForward)
 {
     npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
 

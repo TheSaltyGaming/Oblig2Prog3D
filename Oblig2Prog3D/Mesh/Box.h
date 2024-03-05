@@ -20,22 +20,22 @@ public:
     float red = 0.08f;
     float green = 0.39f;
     float blue = 0.25f;
-    //TODO: different colors based on enum type
+
     std::vector<float> boxVertices;
 
     unsigned int indices[36] = {
-        0, 1, 3, // first triangle (top face)
-        1, 2, 3, // second triangle (top face)
-        4, 5, 7, // third triangle (bottom face)
-        5, 6, 7, // fourth triangle (bottom face)
-        0, 1, 5, // fifth triangle (front face)
-        0, 5, 4, // sixth triangle (front face)
-        3, 2, 6, // seventh triangle (back face)
-        3, 6, 7, // eighth triangle (back face)
-        0, 3, 7, // ninth triangle (left face)
-        0, 7, 4, // tenth triangle (left face)
-        1, 2, 6, // eleventh triangle (right face)
-        1, 6, 5  // twelfth triangle (right face)
+        0, 1, 3, 
+        1, 2, 3, 
+        4, 5, 7, 
+        5, 6, 7, 
+        0, 1, 5, 
+        0, 5, 4, 
+        3, 2, 6, 
+        3, 6, 7, 
+        0, 3, 7, 
+        0, 7, 4, 
+        1, 2, 6, 
+        1, 6, 5  
     };
     unsigned int VBO, VAO, EBO;
 
@@ -46,7 +46,6 @@ public:
     
     
     void Draw(unsigned int shaderProgram);
-    void Draw(unsigned int shaderProgram, float x, float y, float z);
 
     glm::vec3 GetMin();
     glm::vec3 GetMax();
