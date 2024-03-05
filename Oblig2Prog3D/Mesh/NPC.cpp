@@ -114,13 +114,11 @@ glm::mat4 NPC::CalculateModelMatrix()
 void NPC::DrawLine(unsigned int shaderProgram)
 {
     int modelLoc = glGetUniformLocation(shaderProgram, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(CalculateModelMatrix()));
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr( model));
     glBindVertexArray(VAO);
     
     glDrawArrays(GL_LINES, 0, 100);
 }
-
-
 
 void NPC::DrawNPC(unsigned shaderProgram)
 {

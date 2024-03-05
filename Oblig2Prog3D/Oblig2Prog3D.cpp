@@ -98,7 +98,7 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     npcGraph.CreateLine();
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
-    PlayerCollision = Box(0.4f, Player);
+    PlayerCollision = Box(1.f, Player);
 
     //Adding walls to vector
     walls.push_back(Wall1);
@@ -121,7 +121,7 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
 
     for (int i = 0; i < 7; ++i) {
         Box pickup = Box(0.1f, Pickup);
-        pickup.model = glm::translate(pickup.model, glm::vec3(i-2 * 1.5f, -1.88f, 0.0f));
+        pickup.model = glm::translate(pickup.model, glm::vec3(i-2 * 1.5f, -0.75f, 0.0f));
         pickupList.push_back(pickup);
     }
     
@@ -206,11 +206,11 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     plane1.model = glm::translate(plane1.model, glm::vec3(0.0f, -8.0f, 0.0f));
     plane.model = glm::translate(plane.model, glm::vec3(0.0f, -2.0f, 0.0f));
 
-    house.model = glm::translate(house.model, glm::vec3(4.0f, -0.999f, -4.0f));
+    house.model = glm::translate(house.model, glm::vec3(4.0f, 0.1, -4.0f));
     door.model = glm::translate(house.model, glm::vec3(-0.2f, -0.299f, 1.0f));
     //house.model = glm::scale(house.model, glm::vec3(0.5f, 0.5f, 0.5f));
 
-    pickup.model = glm::translate(house.model, glm::vec3(1.0f, -0.599f, -1.0f));
+    pickup.model = glm::translate(house.model, glm::vec3(1.0f, 0.599f, -1.0f));
 
     Wall1.model = glm::translate(Wall1.model, glm::vec3(0.0f, -7.29f, 4.0f));
     Wall2.model = glm::translate(Wall2.model, glm::vec3(0.0f, -7.29f, -4.0f));
@@ -227,7 +227,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
 
    // plane1.model = glm::rotate( plane1.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     float NpcXPos = -5.0f;
-    float NpcYPos = 0.0f;
+    float NpcYPos = -0.9f;
     float NpcZPos = npc.f(NpcXPos);
     bool isMovingForward = true;
     while (!glfwWindowShouldClose(window))
@@ -282,13 +282,13 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
  
         glLineWidth(12);
 
-        npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
+       
 
         //collision following camera
         PlayerCollision.model = glm::mat4(1.0f); // Reset the model matrix
         PlayerCollision.model = glm::translate(PlayerCollision.model, MainCamera.cameraPos);
 
-       
+        npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
 
         if (NpcXPos > 5.0f)
         {
@@ -308,14 +308,12 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         {
             NpcXPos -= 1 * deltaTime;
             NpcZPos = npc.f(NpcXPos);
-            //std::cout << NpcXPos << std::endl;
         }
         
         
-       // npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
-       
         
-        npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
+        
+        //npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
         glDrawArrays(GL_LINE_STRIP, 0, points.size());
         plane1.DrawPlane(shaderProgram);
         plane.DrawPlane(shaderProgram);
@@ -377,14 +375,17 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
+
+    glm::vec3 cameraFrontXZ = glm::normalize(glm::vec3(MainCamera.cameraFront.x, 0.0f, MainCamera.cameraFront.z)); 
+    
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        MainCamera.cameraPos += cameraSpeed * MainCamera.cameraFront;
+        MainCamera.cameraPos += cameraSpeed * cameraFrontXZ;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        MainCamera.cameraPos -= cameraSpeed * MainCamera.cameraFront;
+        MainCamera.cameraPos -= cameraSpeed * cameraFrontXZ;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         MainCamera.cameraPos -= glm::normalize(glm::cross(MainCamera.cameraFront, MainCamera.cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
