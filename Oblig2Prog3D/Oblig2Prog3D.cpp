@@ -81,19 +81,8 @@ const char *fragmentShaderSource = fragmentShaderSourceString.c_str();
 #pragma endregion
 
 
-int main()
+void CreateObjects()
 {
-    
-    
-    std::vector<Vertex> points = fileManager.readPointsFromFile("NPCPoints.txt");
-    std::vector<float> floats = fileManager.convertPointsToFloats(points, 1/9.9f);
-    
-    GLFWwindow* window;
-    unsigned shaderProgram, VBO, VAO, EBO;
-    int vertexColorLocation, value1;
-    
-    
-setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
     plane.CreateMeshPlane();
     plane1.CreateMeshPlane();
     npc.CreateNPC();
@@ -101,7 +90,6 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
     PlayerCollision = Box(1.f, Player);
-
     playerinhouse = Box(0.2f, Player);
 
     //Adding walls to vector
@@ -118,10 +106,6 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     tableLeg = Box(0.15f, Pickup);
     tableTop = Box(-0.3f, -0.05f, -0.3f, 0.3f, 0.05f, 0.3f, Npc);
     
-    
-    //Wall1 = Box(-1.5, -0.7, -0.05, 1.5, 1, 0.05, House);
-    
-    //PlayerCollision = Box(-0.1f, -0.1f, -0.1f, 0.1f, 0.2f, 0.1f, Player);
 
     for (int i = 0; i < 7; ++i) {
         Box pickup = Box(0.1f, Pickup);
@@ -131,7 +115,23 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     
     
     door = Box(-0.3, -0.7, -0.1, 0.3, 0.6, 0.1, Door);
+}
+
+int main()
+{
     
+    
+    std::vector<Vertex> points = fileManager.readPointsFromFile("NPCPoints.txt");
+    std::vector<float> floats = fileManager.convertPointsToFloats(points, 1/9.9f);
+    
+    GLFWwindow* window;
+    unsigned shaderProgram, VBO, VAO, EBO;
+    int vertexColorLocation, value1;
+    
+    
+    setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats);
+
+    CreateObjects();
     
     
     render(window, shaderProgram, VAO, vertexColorLocation, points);
@@ -199,14 +199,8 @@ void setup(GLFWwindow*& window, unsigned& shaderProgram, unsigned& VBO, unsigned
     return;
 }
 
-//Alt av rendering skjer her. Inkoudert da den while loopen
-void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertexColorLocation, std::vector<Vertex> points)
+void SetModelLocations()
 {
-    glm::mat4 trans = glm::mat4(1.0f);
-
-    glm::mat4 projection;
-    // render loop
-    // -----------
     plane1.model = glm::translate(plane1.model, glm::vec3(0.0f, -8.0f, 0.0f));
     plane.model = glm::translate(plane.model, glm::vec3(0.0f, -1.2f, 0.0f));
 
@@ -231,57 +225,138 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     tableTop.model = glm::translate(tableTop.model, glm::vec3(0.0f, -7.73f, 0.0f));
 
     playerinhouse.model = glm::translate(playerinhouse.model, glm::vec3(1.0f, -7.78f, -1.0f));
+}
 
-   // plane1.model = glm::rotate( plane1.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+void MoveNPC(float& NpcXPos, float NpcYPos, float NpcZPos, bool isMovingForward)
+{
+    npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
+
+    if (NpcXPos > 5.0f)
+    {
+        isMovingForward = false;
+    }
+    if (NpcXPos < -5.0f)
+    {
+        isMovingForward = true;
+    }
+        
+    if (isMovingForward)
+    {
+        NpcXPos += 1 * deltaTime;
+        NpcZPos = npc.f(NpcXPos);
+    }
+    else
+    {
+        NpcXPos -= 1 * deltaTime;
+        NpcZPos = npc.f(NpcXPos);
+    }
+}
+
+void DrawObjects(unsigned shaderProgram, std::vector<Vertex> points)
+{
+    glDrawArrays(GL_LINE_STRIP, 0, points.size());
+    plane1.DrawPlane(shaderProgram);
+    plane.DrawPlane(shaderProgram);
+    npc.DrawNPC(shaderProgram);
+    npcGraph.DrawLine(shaderProgram);
+        
+    //box.Draw(shaderProgram, 0, -1.f, 0);
+    house.Draw(shaderProgram);
+    pickup.Draw(shaderProgram);
+    door.Draw(shaderProgram);
+
+    tableLeg.Draw(shaderProgram);
+    tableTop.Draw(shaderProgram);
+
+    playerinhouse.Draw(shaderProgram);
+
+    //draw all pickups
+    for (int i = 0; i < pickupList.size(); ++i)
+    {
+        pickupList[i].Draw(shaderProgram);
+    }
+
+    for (int i = 0; i < walls.size(); ++i)
+    {
+        walls[i].Draw(shaderProgram);
+    }
+}
+
+void CollisionCheck()
+{
+    for (int i = 0; i < pickupList.size(); i++)
+    {
+        if (PlayerCollision.CheckCollision(&pickupList[i]))
+        {
+            std::cout << "Collision with pickup" << std::endl;
+            pickupcount++;
+            std::cout << "Pickup count: " << pickupcount << std::endl;
+
+            // Erase the pickup from the list
+            pickupList.erase(pickupList.begin() + i);
+            i--;
+        }
+    }
+
+    if (PlayerCollision.CheckCollision(&door))
+    {
+        std::cout << "Collision with door" << std::endl;
+        MainCamera.cameraPos = glm::vec3(3.88911f, -5.91243f, 3.82015f);
+        isInsideHouse = true;
+    }
+}
+
+void CameraView(unsigned shaderProgram, glm::mat4 trans, glm::mat4 projection)
+{
+    projection = glm::perspective(glm::radians(isInsideHouse ? 80.0f : 45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        
+    int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        
+    MainCamera.tick();
+
+    const float radius = 10.0f;
+    float camX = sin(glfwGetTime()) * radius;
+    float camZ = cos(glfwGetTime()) * radius;
+    glm::mat4 view;
+    view = glm::lookAt(MainCamera.cameraPos, MainCamera.cameraPos + MainCamera.cameraFront, MainCamera.cameraUp);
+        
+    int viewLoc = glGetUniformLocation(shaderProgram, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        
+    // Pass the transformation matrix to the vertex shader
+    unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+}
+
+//Alt av rendering skjer her. Inkoudert da den while loopen
+void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertexColorLocation, std::vector<Vertex> points)
+{
+    glm::mat4 trans = glm::mat4(1.0f);
+
+    glm::mat4 projection;
+    // render loop
+    // -----------
+    SetModelLocations();
+
+    //NPC INTERPOLATION THINGS
     float NpcXPos = -5.0f;
     float NpcYPos = -0.9f;
     float NpcZPos = npc.f(NpcXPos);
     bool isMovingForward = true;
+    
     while (!glfwWindowShouldClose(window))
     {
+        //DeltaTime
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;  
+        lastFrame = currentFrame;
         
         // input
         // -----
         processInput(window);
 
-        
-
-        //projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-
-        projection = glm::perspective(glm::radians(isInsideHouse ? 80.0f : 45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-        
-        int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        
-
-        MainCamera.tick();
-
-        const float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
-        glm::mat4 view;
-        view = glm::lookAt(MainCamera.cameraPos, MainCamera.cameraPos + MainCamera.cameraFront, MainCamera.cameraUp);
-        
-        int viewLoc = glGetUniformLocation(shaderProgram, "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        
-        // Pass the transformation matrix to the vertex shader
-        unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-
-        
-        // render kode her
-        // ------
-
-        
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-        //shader.setMat4("model", model);
-        //ourModel.Draw();
+        CameraView(shaderProgram, trans, projection);
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -291,92 +366,15 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         glBindVertexArray(VAO);
  
         glLineWidth(12);
-
-       
-
+        
         //collision following camera
         PlayerCollision.model = glm::mat4(1.0f); // Reset the model matrix
         PlayerCollision.model = glm::translate(PlayerCollision.model, MainCamera.cameraPos);
 
-        npc.MoveNPC( glm::vec3(NpcXPos, NpcYPos, NpcZPos));
-
-        if (NpcXPos > 5.0f)
-        {
-            isMovingForward = false;
-        }
-         if (NpcXPos < -5.0f)
-        {
-            isMovingForward = true;
-        }
+        MoveNPC(NpcXPos, NpcYPos, NpcZPos, isMovingForward);
+        DrawObjects(shaderProgram, points);
+        CollisionCheck();
         
-        if (isMovingForward)
-        {
-            NpcXPos += 1 * deltaTime;
-            NpcZPos = npc.f(NpcXPos);
-        }
-        else
-        {
-            NpcXPos -= 1 * deltaTime;
-            NpcZPos = npc.f(NpcXPos);
-        }
-        
-        
-        
-        
-        //npc.model = glm::translate(npc.model, glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
-        glDrawArrays(GL_LINE_STRIP, 0, points.size());
-        plane1.DrawPlane(shaderProgram);
-        plane.DrawPlane(shaderProgram);
-        npc.DrawNPC(shaderProgram);
-        npcGraph.DrawLine(shaderProgram);
-        
-        //box.Draw(shaderProgram, 0, -1.f, 0);
-        house.Draw(shaderProgram);
-        pickup.Draw(shaderProgram);
-        door.Draw(shaderProgram);
-
-        tableLeg.Draw(shaderProgram);
-        tableTop.Draw(shaderProgram);
-
-        playerinhouse.Draw(shaderProgram);
-
-        //draw all pickups
-        for (int i = 0; i < pickupList.size(); ++i)
-        {
-            pickupList[i].Draw(shaderProgram);
-        }
-
-        for (int i = 0; i < walls.size(); ++i)
-        {
-            walls[i].Draw(shaderProgram);
-        }
-        
-
-        //pickup check
-        for (int i = 0; i < pickupList.size(); i++)
-        {
-            if (PlayerCollision.CheckCollision(&pickupList[i]))
-            {
-                std::cout << "Collision with pickup" << std::endl;
-                pickupcount++;
-                std::cout << "Pickup count: " << pickupcount << std::endl;
-
-                // Erase the pickup from the list
-                pickupList.erase(pickupList.begin() + i);
-                i--;
-            }
-        }
-
-        if (PlayerCollision.CheckCollision(&door))
-        {
-            std::cout << "Collision with door" << std::endl;
-            MainCamera.cameraPos = glm::vec3(3.88911f, -5.91243f, 3.82015f);
-            isInsideHouse = true;
-        }
-
-        //std::cout << "Player position: " << MainCamera.cameraPos.x << " " << MainCamera.cameraPos.y << " " << MainCamera.cameraPos.z << std::endl;
-       // npc.DrawLine(shaderProgram);
- 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
