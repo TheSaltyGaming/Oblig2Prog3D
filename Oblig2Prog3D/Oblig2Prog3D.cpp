@@ -297,7 +297,6 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         {
             NpcXPos -= 1 * deltaTime;
             NpcZPos = npc.f(NpcXPos);
-            std::cout << NpcXPos << std::endl;
         }
         
         
@@ -356,14 +355,17 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
+
+    glm::vec3 cameraFrontXZ = glm::normalize(glm::vec3(MainCamera.cameraFront.x, 0.0f, MainCamera.cameraFront.z)); 
+    
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        MainCamera.cameraPos += cameraSpeed * MainCamera.cameraFront;
+        MainCamera.cameraPos += cameraSpeed * cameraFrontXZ;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        MainCamera.cameraPos -= cameraSpeed * MainCamera.cameraFront;
+        MainCamera.cameraPos -= cameraSpeed * cameraFrontXZ;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         MainCamera.cameraPos -= glm::normalize(glm::cross(MainCamera.cameraFront, MainCamera.cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
