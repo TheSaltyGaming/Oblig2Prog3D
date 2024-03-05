@@ -31,7 +31,6 @@ public:
     glm::mat4 model = glm::mat4(1.0f);
     
     float f(float x);
-    void tick();
     void CreateLine();
     void DrawLine(unsigned int shaderProgram);
     void CreateNPC();
@@ -40,7 +39,7 @@ public:
     void DrawNPC(unsigned int shaderProgram);
 
     glm::vec3 CurrentNPCPosition; 
-    glm::vec3 PreviousNPCPosition;
+    
     
     unsigned int VBO, VAO, EBO;
     
