@@ -12,9 +12,7 @@
 #include "FileManager.h"
 #include "Mesh/Plane.h"
 #include "Shader.h"
-#include "shadertest.h"
 #include "Mesh/Box.h"
-#include "Mesh/Model.h"
 #include "Mesh/NPC.h"
 
 #pragma region Public Variables
@@ -32,10 +30,18 @@ Box PlayerCollision;
 NPC npc;
 NPC npcGraph;
 
+//SCENE TWO
+Box Wall1;
+Box Wall2;
+Box Wall3;
+Box Wall4;
+
+Box tableLeg;
+Box tableTop;
 
 
 //TODO: USE THIS FOR COLLISION DETECTION. Ta player og kjør gjennom vektoren for å sjekke kollisjon. 
-std::vector<Box> boxes = {house, pickup, door};
+std::vector<Box> walls;;
 std::vector<Box> pickupList;
 
 bool firstMouse = true; // Used in mouse_callback
@@ -93,6 +99,24 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     house = Box(1, House);
     pickup = Box(0.5f, Pickup);
     PlayerCollision = Box(0.4f, Player);
+
+    //Adding walls to vector
+    walls.push_back(Wall1);
+    walls.push_back(Wall2);
+    walls.push_back(Wall3);
+    walls.push_back(Wall4);
+    
+    for (int i = 0; i < walls.size(); ++i)
+    {
+        walls[i] = Box(-4, -0.7, -0.05, 4, 3, 0.05, House);
+    }
+
+    tableLeg = Box(0.15f, Pickup);
+    tableTop = Box(-0.3f, -0.05f, -0.3f, 0.3f, 0.05f, 0.3f, Npc);
+    
+    
+    //Wall1 = Box(-1.5, -0.7, -0.05, 1.5, 1, 0.05, House);
+    
     //PlayerCollision = Box(-0.1f, -0.1f, -0.1f, 0.1f, 0.2f, 0.1f, Player);
 
     for (int i = 0; i < 7; ++i) {
@@ -114,7 +138,6 @@ setup(window, shaderProgram, VBO, VAO, EBO, vertexColorLocation, value1, floats)
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
-    std::cout<<npc.vector.x<<  npc.vector.y <<npc.vector.z << std::endl;
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -164,31 +187,6 @@ void setup(GLFWwindow*& window, unsigned& shaderProgram, unsigned& VBO, unsigned
     shader.CreateFragmentShader(fragmentShaderSource);
     shader.LinkProgram();
     shaderProgram = shader.GetProgram();
-
-
-    // glGenVertexArrays(1, &VAO);
-    // glGenBuffers(1, &VBO);
-    // glGenBuffers(1, &EBO);
-    // // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    // glBindVertexArray(VAO);
-    //
-    // vertexColorLocation = glGetUniformLocation(shaderProgram,"Color");
-    //
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, floats.size()*sizeof(float), floats.data() , GL_STATIC_DRAW);
-    //
-    //
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    // glEnableVertexAttribArray(0);
-    //
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
-    // glEnableVertexAttribArray(1);
-    //
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //
-    // // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    // glBindVertexArray(0);
     
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -205,7 +203,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     glm::mat4 projection;
     // render loop
     // -----------
-    plane1.model = glm::translate(plane1.model, glm::vec3(0.0f, 10.0f, 0.0f));
+    plane1.model = glm::translate(plane1.model, glm::vec3(0.0f, -8.0f, 0.0f));
     plane.model = glm::translate(plane.model, glm::vec3(0.0f, -2.0f, 0.0f));
 
     house.model = glm::translate(house.model, glm::vec3(4.0f, -0.999f, -4.0f));
@@ -213,6 +211,19 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
     //house.model = glm::scale(house.model, glm::vec3(0.5f, 0.5f, 0.5f));
 
     pickup.model = glm::translate(house.model, glm::vec3(1.0f, -0.599f, -1.0f));
+
+    Wall1.model = glm::translate(Wall1.model, glm::vec3(0.0f, -7.29f, 4.0f));
+    Wall2.model = glm::translate(Wall2.model, glm::vec3(0.0f, -7.29f, -4.0f));
+    Wall3.model = glm::translate(Wall3.model, glm::vec3(4.0f, -7.29f, 0.0f));
+    Wall4.model = glm::translate(Wall4.model, glm::vec3(-4.0f, -7.29f, 0.0f));
+    
+    walls[0].model = glm::rotate( Wall1.model, glm::radians(0.0001f), glm::vec3(0.1f, 0.0f, 0.0f));
+    walls[1].model = glm::rotate( Wall2.model, glm::radians(0.0001f), glm::vec3(0.1f, 0.0f, 0.0f));
+    walls[2].model = glm::rotate( Wall3.model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    walls[3].model = glm::rotate( Wall4.model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    tableLeg.model = glm::translate(tableLeg.model, glm::vec3(0.0f, -7.84f, 0.0f));
+    tableTop.model = glm::translate(tableTop.model, glm::vec3(0.0f, -7.73f, 0.0f));
 
    // plane1.model = glm::rotate( plane1.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     float NpcXPos = -5.0f;
@@ -297,7 +308,7 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         {
             NpcXPos -= 1 * deltaTime;
             NpcZPos = npc.f(NpcXPos);
-            std::cout << NpcXPos << std::endl;
+            //std::cout << NpcXPos << std::endl;
         }
         
         
@@ -316,11 +327,20 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         pickup.Draw(shaderProgram);
         door.Draw(shaderProgram);
 
+        tableLeg.Draw(shaderProgram);
+        tableTop.Draw(shaderProgram);
+
         //draw all pickups
         for (int i = 0; i < pickupList.size(); ++i)
         {
             pickupList[i].Draw(shaderProgram);
         }
+
+        for (int i = 0; i < walls.size(); ++i)
+        {
+            walls[i].Draw(shaderProgram);
+        }
+        
 
         //pickup check
         for (int i = 0; i < pickupList.size(); i++)
@@ -340,9 +360,10 @@ void render(GLFWwindow* window, unsigned shaderProgram, unsigned VAO, int vertex
         if (PlayerCollision.CheckCollision(&door))
         {
             std::cout << "Collision with door" << std::endl;
-            MainCamera.cameraPos += glm::vec3(0.0f, 4.0f, 0.0f);
+            MainCamera.cameraPos = glm::vec3(3.88911f, -5.91243f, 3.82015f);
         }
-        
+
+        std::cout << "Player position: " << MainCamera.cameraPos.x << " " << MainCamera.cameraPos.y << " " << MainCamera.cameraPos.z << std::endl;
        // npc.DrawLine(shaderProgram);
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

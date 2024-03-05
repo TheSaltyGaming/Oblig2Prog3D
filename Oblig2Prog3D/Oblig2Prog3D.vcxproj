@@ -161,11 +161,8 @@
         <ClCompile Include="FileManager.cpp"/>
         <ClCompile Include="glad.c"/>
         <ClCompile Include="Mesh\Box.cpp" />
-        <ClCompile Include="Mesh\Mesh.cpp" />
-        <ClCompile Include="Mesh\Model.cpp" />
         <ClCompile Include="Mesh\NPC.cpp" />
         <ClCompile Include="Mesh\Plane.cpp" />
-        <ClCompile Include="Mesh\Texture.cpp" />
         <ClCompile Include="Oblig2Prog3D.cpp"/>
         <ClCompile Include="Shader.cpp"/>
         <ClCompile Include="Vertex.cpp"/>
@@ -174,13 +171,9 @@
         <ClInclude Include="Camera.h"/>
         <ClInclude Include="FileManager.h"/>
         <ClInclude Include="Mesh\Box.h" />
-        <ClInclude Include="Mesh\Mesh.h" />
-        <ClInclude Include="Mesh\Model.h" />
         <ClInclude Include="Mesh\NPC.h" />
         <ClInclude Include="Mesh\Plane.h" />
-        <ClInclude Include="Mesh\Texture.h" />
         <ClInclude Include="Shader.h"/>
-        <ClInclude Include="shadertest.h" />
         <ClInclude Include="Vertex.h"/>
     </ItemGroup>
     <ItemGroup>
